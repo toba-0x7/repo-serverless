@@ -369,3 +369,63 @@ c. Visit /ride.html under your website domain.\
 d. If you are redirected to the ArcGIS sign-in page, sign in with the user credentials you created previously in the Introduction section as a prerequisite of this tutorial.\
 e. After the map has loaded, click anywhere on the map to set a pickup location.\
 f. Choose Request Unicorn. You should see a notification in the right sidebar that a unicorn is on its way and then see a unicorn icon fly to your pickup location.
+### Resource cleanup
+In this module, you will go through the steps to terminate all the resources you created throughout this tutorial. You will terminate your AWS Amplify app, an Amazon Cognito User Pool, an AWS Lambda function, an IAM role, a DynamoDB table, a REST API, and a CloudWatch Log. It is a best practice to delete resources you are no longer using to avoid unwanted charges.
+### Implementation
+- Delete your Amplify App
+```
+a. In the AWS Management Console choose Services then select AWS Amplify under Mobile.
+b. Select the app you created in module 1.
+c. On the app landing page, choose ‘Actions > Delete app’. Enter ‘delete’ when prompted to confirm, then choose confirm.
+```
+- Delete your Amazon Cognito user pool
+If you used the provided AWS CloudFormation template to complete module 2, simply delete the stack using the AWS CloudFormation Console. Otherwise, delete the Amazon Cognito user pool you created in module 2.
+```
+a. From the AWS Console click Services then select Cognito under Mobile Services.
+b. Choose Manage your User Pools.
+c. Select the WildRydes user pool you created in module 2.
+d. Choose Delete Pool in the upper right corner of the page.
+e. Type delete and choose Delete Pool when prompted to confirm.
+```
+- Delete your serverless backend
+Delete the AWS Lambda function, IAM role and Amazon DynamoDB table you created in module 3.
+```
+Lambda Function
+a. In the AWS Management Console, click Services then select Lambda under Compute.
+b. Select the RequestUnicorn function you created in module 3.
+c. From the Actions drop-down, choose Delete function.
+d. Enter delete and choose Delete pool when prompted to confirm.
+
+IAM Role
+a. In the AWS Management Console, click Services then select IAM under Security, Identity & Compliance.
+b. Select Roles from the left navigation pane.
+c. Enter WildRydesLambda into the filter box.
+d. Select the role you created in Module 3.
+e. Select the Role and choose Delete. Confirm the role name that needs to be deleted by entering WildRydesLambda. Choose Delete role. 
+f. Choose Yes, Delete when prompted to confirm.
+
+DynamoDB Table
+a. In the AWS Management Console, click Services then select DynamoDB under Databases
+b. Choose Tables in the navigation menu.
+c. Choose the Rides table you created in module 3.
+d. Choose Delete at the top right.
+e. Leave the checkbox to Delete all CloudWatch alarms for this table selected, enter delete, and choose Delete.
+```
+- Delete your REST API
+Delete the REST API created in module 4. There is a Delete API option in the Actions drop-down when you select your API in the Amazon API Gateway Console.
+```
+a. In the AWS Management Console, click Services then select API Gateway under Application Services.
+b. Select the API you created in module 4.
+c. Expand the Actions drop-down and choose Delete API.
+d. Enter the name of your API when prompted and choose Delete API.
+```
+- Delete your CloudWatch Log
+AWS Lambda automatically creates a new log group per function in Amazon CloudWatch Logs and writes logs to it when your function is invoked. You should delete the log group for the RequestUnicorn function. Also, if you launched any CloudFormation stacks, there may be log groups associated with custom resources in those stacks that you should delete.
+```
+a. From the AWS Console click Services then select CloudWatch under Management Tools.
+b. Choose Logs in the navigation menu.
+c. Select the /aws/lambda/RequestUnicorn log group. If you have many log groups in your account, you can type /aws/lambda/RequestUnicorn into the Filter text box to easily locate the log group.
+d. Choose Delete log group from the Actions drop-down.
+e. Choose Yes, Delete when prompted to confirm.
+f. If you launched any CloudFormation templates to complete a module, repeat steps 3-5 for any log groups which begin with /aws/lambda/wildrydes-webapp.
+```
