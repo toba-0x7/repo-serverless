@@ -293,3 +293,79 @@ git add .
 git commit -m "new_configuration"
 git push
 ```
+- Validate your implementation
+Note: It is possible that you will see a delay between updating the config.js file in your S3 bucket and when the updated content is visible in your browser. You should also ensure that you clear your browser cache before executing the following steps.\
+a. Update the ArcGIS JS version from 4.3 to 4.6 (newer versions will not work in this tutorial) in the ride.html file as:
+```
+<script src="https://js.arcgis.com/4.6/"></script>
+ <link rel="stylesheet" href="https://js.arcgis.com/4.6/esri/css/main.css">
+ ```
+ An example of a complete ride.html file is included below. Note, some values in your file may be different.
+ ```
+ <div id="noApiMessage" class="configMessage" style="display: none;">
+        <div class="backdrop"></div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Successfully Authenticated!</h3>
+            </div>
+            <div class="panel-body">
+                <p>This page is not functional yet because there is no API invoke URL configured in <a href="/js/config.js">/js/config.js</a>. You'll configure this in Module 3.</p>
+                <p>In the meantime, if you'd like to test the Amazon Cognito user pool authorizer for your API, use the auth token below:</p>
+                <textarea class="authToken"></textarea>
+            </div>
+        </div>
+    </div>
+
+    <div id="noCognitoMessage" class="configMessage" style="display: none;">
+        <div class="backdrop"></div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">No Cognito User Pool Configured</h3>
+            </div>
+            <div class="panel-body">
+                <p>There is no user pool configured in <a href="/js/config.js">/js/config.js</a>. You'll configure this in Module 2 of the workshop.</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="main">
+        <div id="map">
+        </div>
+    </div>
+
+    <div id="authTokenModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="authToken">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Your Auth Token</h4>
+                </div>
+                <div class="modal-body">
+                    <textarea class="authToken"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="js/vendor/jquery-3.1.0.js"></script>
+    <script src="js/vendor/bootstrap.min.js"></script>
+    <script src="js/vendor/aws-cognito-sdk.min.js"></script>
+    <script src="js/vendor/amazon-cognito-identity.min.js"></script>
+    <script src="https://js.arcgis.com/4.6/"></script>
+    <script src="js/config.js"></script>
+    <script src="js/cognito-auth.js"></script>
+    <script src="js/esri-map.js"></script>
+    <script src="js/ride.js"></script>
+</body>
+
+</html>
+```
+b. Save the modified file and push it to your Git repository to have it automatically deploy to Amplify Console.\
+c. Visit /ride.html under your website domain.\
+d. If you are redirected to the ArcGIS sign-in page, sign in with the user credentials you created previously in the Introduction section as a prerequisite of this tutorial.\
+e. After the map has loaded, click anywhere on the map to set a pickup location.\
+f. Choose Request Unicorn. You should see a notification in the right sidebar that a unicorn is on its way and then see a unicorn icon fly to your pickup location.
