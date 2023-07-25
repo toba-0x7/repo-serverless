@@ -21,3 +21,12 @@ This tutorial is divided into five modules. Each module describes a scenario of 
 - Build a Serverless Backend (30 minutes): Build a backend process for handling requests for your web application
 - Deploy a RESTful API (15 minutes): Use Amazon API Gateway to expose the Lambda function you built in the previous module as a RESTful API
 - Terminate Resources (10 minutes): Terminate all the resources you created throughout this tutorial
+### Static Web Hosting with Continuous Deployment
+In this module, you will configure AWS Amplify to host the static resources for your web application with continuous deployment built in. The Amplify Console provides a git-based workflow for continuous deployment and hosting of full-stack web apps. In subsequent modules, you will add dynamic functionality to these pages using JavaScript to call remote RESTful APIs built with AWS Lambda and Amazon API Gateway. The architecture for this module is straightforward. All of your static web content including HTML, CSS, JavaScript, images, and other files will be managed by AWS Amplify Console. Your end users will then access your site using the public website URL exposed by AWS Amplify Console. You don't need to run any web servers or use other services to make your site available. For most real applications you'll want to use a custom domain to host your site. If you're interested in using your own domain, follow the instructions for setting up a custom domain on Amplify.
+### Implementation
+- Select a region
+- Create a Git repository
+- Populate the Git repository
+- Enable Web Hosting with the AWS Amplify Console
+- Modify your site
+- Recap
