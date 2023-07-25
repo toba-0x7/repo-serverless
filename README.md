@@ -215,3 +215,81 @@ h. Verify that the execution succeeded and that the function result looks like t
     }
 }
 ```
+### Deploy a RESTful API
+In this module, you will use Amazon API Gateway to expose the Lambda function you built in the previous module as a RESTful API. This API will be accessible on the public Internet. It will be secured using the Amazon Cognito user pool you created in the previous module. Using this configuration, you will then turn your statically hosted website into a dynamic web application by adding client-side JavaScript that makes AJAX calls to the exposed APIs.\
+The diagram above shows how the API Gateway component you will build in this module integrates with the existing components you built previously. The grayed out items are pieces you have already implemented in previous steps.\
+The static website you deployed in the first module already has a page configured to interact with the API you will build in this module. The page at /ride.html has a simple map-based interface for requesting a unicorn ride. After authenticating using the /signin.html page, your users will be able to select their pickup location by clicking a point on the map and then requesting a ride by choosing the "Request Unicorn" button in the upper right corner.\
+This module will focus on the steps required to build the cloud components of the API, but if you're interested in how the browser code works that calls this API, you can inspect the ride.js file of the website. In this case, the application uses jQuery's ajax() method to make the remote request.
+### Implementation
+- Create a New REST API
+```
+a. In the AWS Management Console, click Services then select API Gateway under Application Services.
+b. Choose Create API. Underneath the Create new API section, make sure New API is selected.
+c. Select Build under REST API and enter WildRydes for the API Name.
+d. Choose Edge optimized in the Endpoint Type dropdown. Note: Edge optimized are best for public services being accessed from the Internet. Regional endpoints are typically used for APIs that are accessed primarily from within the same AWS Region.
+e. Choose Create API
+```
+- Create a new resource and method
+Create a new resource called /ride within your API. Then create a POST method for that resource and configure it to use a Lambda proxy integration backed by the RequestUnicorn function you created in the first step of this module.
+```
+a. In the left nav, click on Resources under your WildRydes API.
+b. From the Actions dropdown select Create Resource.
+c. Enter ride as the Resource Name.
+d. Ensure the Resource Path is set to ride.
+e. Select Enable API Gateway CORS for the resource.
+f. Click Create Resource.
+g. With the newly created /ride resource selected, from the Action dropdown select Create Method.
+h. Select POST from the new dropdown that appears, then click the checkmark.
+i. Select Lambda Function for the integration type.
+j. Check the box for Use Lambda Proxy integration.
+k. Select the Region you are using for Lambda Region.
+l. Enter the name of the function you created in the previous module, RequestUnicorn, for Lambda Function.
+m. Choose Save. Please note, if you get an error that your function does not exist, check that the region you selected matches the one you used in the previous module.
+n. When prompted to give Amazon API Gateway permission to invoke your function, choose OK.
+o. Choose on the Method Request card.
+p. Choose the pencil icon next to Authorization.
+q. Create Authorizer using https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-enable-cognito-user-pool.html, Select the WildRydes Cognito user pool authorizer from the drop-down list, and click the checkmark icon.
+```
+- Deploy Your API
+From the Amazon API Gateway console, choose Actions, Deploy API. You'll be prompted to create a new stage. You can use prod for the stage name.
+```
+a. In the Actions drop-down list select Deploy API.
+b. Select [New Stage] in the Deployment stage drop-down list.
+c. Enter prod for the Stage Name.
+d. Choose Deploy.
+e. Note the Invoke URL. You will use it in the next section.
+```
+- Update the website config
+Update the /js/config.js file in your website deployment to include the invoke URL of the stage you just created. You should copy the invoke URL directly from the top of the stage editor page on the Amazon API Gateway console and paste it into the _config.api.invokeUrl key of your sites /js/config.js file. Make sure when you update the config file it still contains the updates you made in the previous module for your Cognito user pool.
+```
+a. Open the config.js file in a text editor.
+b. Update the invokeUrl setting under the api key in the config.js file. Set the value to the Invoke URL for the deployment stage your created in the previous section.
+```
+An example of a complete config.js file is included below. Note, the actual values in your file will be different.
+```
+window._config = {
+
+    cognito: {
+
+        userPoolId: 'us-west-2_uXboG5pAb', // e.g. us-east-2_uXboG5pAb         
+
+        userPoolClientId: '25ddkmj4v6hfsfvruhpfi7n4hv', // e.g. 25ddkmj4v6hfsfvruhpfi7n4hv
+
+        region: 'us-west-2' // e.g. us-east-2 
+
+    }, 
+
+    api: { 
+
+        invokeUrl: 'https://rc7nyt4tql.execute-api.us-west-2.amazonaws.com/prod' // e.g. https://rc7nyt4tql.execute-api.us-west-2.amazonaws.com/prod, 
+
+    } 
+
+};
+```
+c. Save the modified file and push it to your Git repository to have it automatically deploy to Amplify Console.
+```
+git add .
+git commit -m "new_configuration"
+git push
+```
