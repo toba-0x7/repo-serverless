@@ -27,6 +27,16 @@ In this module, you will configure AWS Amplify to host the static resources for 
 - Select a region
 - Create a Git repository
 - Populate the Git repository
+Change directory into your repository and copy the static files from S3:
+```
+aws s3 cp s3://wildrydes-us-east-1/WebApplication/1_StaticWebHosting/website ./ --recursive
+```
+Commit the files to your Git service
+```
+git add .
+git commit -m 'new'
+git push
+```
 - Enable Web Hosting with the AWS Amplify Console
 - Modify your site
-- Recap
+- Recapx
