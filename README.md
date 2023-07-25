@@ -1,6 +1,6 @@
 # Build a Serverless Web Application
 ## Overview
-In this tutorial, you will create a simple serverless web application that enables users to request unicorn rides from the Wild Rydes fleet. The application will present users with an HTML-based user interface for indicating the location where they would like to be picked up and will interact with a RESTful web service on the backend to submit the request and dispatch a nearby unicorn. The application will also provide facilities for users to register with the service and log in before requesting rides.
+Create a simple serverless web application that enables users to request unicorn rides from the Wild Rydes fleet. The application will present users with an HTML-based user interface for indicating the location where they would like to be picked up and will interact with a RESTful web service on the backend to submit the request and dispatch a nearby unicorn. The application will also provide facilities for users to register with the service and log in before requesting rides.
 ## Prerequisites
 To complete this tutorial, you will need an AWS account, an account with ArcGIS to add mapping to your app, a text editor, and a web browser. If you don't already have an AWS account, you can follow the Setting Up Your AWS Environment getting started guide for a quick overview.
 ## Application architecture
@@ -16,17 +16,17 @@ Amazon DynamoDB provides a persistence layer where data can be stored by the API
 JavaScript executed in the browser sends and receives data from a public backend API built using Lambda and API Gateway.
 ## Modules
 This tutorial is divided into five modules. Each module describes a scenario of what we're going to build and step-by-step directions to help you implement the architecture and verify your work.
-- Host a Static Website (15 minutes): Configure AWS Amplify to host the static resources for your web application with continuous deployment built in 
-- Manage Users (30 minutes): Create an Amazon Cognito user pool to manage your users' accounts
-- Build a Serverless Backend (30 minutes): Build a backend process for handling requests for your web application
-- Deploy a RESTful API (15 minutes): Use Amazon API Gateway to expose the Lambda function you built in the previous module as a RESTful API
-- Terminate Resources (10 minutes): Terminate all the resources you created throughout this tutorial
-### Static Web Hosting with Continuous Deployment
+- Host a Static Website: Configure AWS Amplify to host the static resources for your web application with continuous deployment built in 
+- Manage Users: Create an Amazon Cognito user pool to manage your users' accounts
+- Build a Serverless Backend: Build a backend process for handling requests for your web application
+- Deploy a RESTful API: Use Amazon API Gateway to expose the Lambda function you built in the previous module as a RESTful API
+- Terminate Resources: Terminate all the resources you created throughout this tutorial
+# Static Web Hosting with Continuous Deployment
 In this module, you will configure AWS Amplify to host the static resources for your web application with continuous deployment built in. The Amplify Console provides a git-based workflow for continuous deployment and hosting of full-stack web apps. In subsequent modules, you will add dynamic functionality to these pages using JavaScript to call remote RESTful APIs built with AWS Lambda and Amazon API Gateway. The architecture for this module is straightforward. All of your static web content including HTML, CSS, JavaScript, images, and other files will be managed by AWS Amplify Console. Your end users will then access your site using the public website URL exposed by AWS Amplify Console. You don't need to run any web servers or use other services to make your site available. For most real applications you'll want to use a custom domain to host your site. If you're interested in using your own domain, follow the instructions for setting up a custom domain on Amplify.
-### Implementation
-- Select a region
-- Create a Git repository
-- Populate the Git repository
+## Implementation
+### Select a region
+### Create a Git repository
+### Populate the Git repository
 Change directory into your repository and copy the static files from S3:
 ```
 aws s3 cp s3://wildrydes-us-east-1/WebApplication/1_StaticWebHosting/website ./ --recursive
@@ -37,7 +37,7 @@ git add .
 git commit -m 'new'
 git push
 ```
-- Enable Web Hosting with the AWS Amplify Console
+### Enable Web Hosting with the AWS Amplify Console
 Next you'll use the AWS Amplify Console to deploy the website you've just committed to git. The Amplify Console takes care of the work of setting up a place to store your static web application code and provides a number of helpful capabilities to simplify both the lifecycle of that application as well as enable best practices.
 ```
 a. Launch the Amplify Console console page
@@ -52,7 +52,7 @@ i. On the "Review" page select Save and deploy
 j. The process takes a couple of minutes for Amplify Console to create the necessary resources and to deploy your code.
 ```
 Once completed, click on the site image to launch your Wild Rydes site. If you click on the link for Master you'll see the build and deployment details related to your branch, and screenshots of the app on various devices
-- Modify your site
+### Modify your site
 The AWS Amplify Console will rebuild and redeploy the app when it detects changes to the connected repository. Make a change to the main page to test out this process.
 ```
 a. From your local machine, open `wildryde-site/index.html` in a text editor of your choice and modify the title line so that it says: <title>Wild Rydes - Rydes of the Future!</title>\
@@ -63,15 +63,15 @@ git add index.html
 git commit -m "updated title"
 git push
 ```
-- Recap
+### Recap
 In this module, you've created static website which will be the base for our Wild Rydes business. AWS Amplify Console makes it really easy to deploy static websites following a continuous integration and delivery model. It has capabilities for "building" more complicated Javascript framework based applications and has features such as feature branch deployments, easy custom domain setup, instant deployments, and password protection.
-### User Management
+# User Management
 In this module you'll create an Amazon Cognito user pool to manage your users' accounts. You'll deploy pages that enable customers to register as a new user, verify their email address, and sign into the site.\
 When users visit your website they will first register a new user account. For the purposes of this workshop we'll only require them to provide an email address and password to register. However, you can configure Amazon Cognito to require additional attributes in your own applications.\
 After users submit their registration, Amazon Cognito will send a confirmation email with a verification code to the address they provided. To confirm their account, users will return to your site and enter their email address and the verification code they received. You can also confirm user accounts using the Amazon Cognito console with a fake email addresses for testing.\
 After users have a confirmed account (either using the email verification process or a manual confirmation through the console), they will be able to sign in. When users sign in, they enter their username (or email) and password. A JavaScript function then communicates with Amazon Cognito, authenticates using the Secure Remote Password protocol (SRP), and receives back a set of JSON Web Tokens (JWT). The JWTs contain claims about the identity of the user and will be used in the next module to authenticate against the RESTful API you build with Amazon API Gateway.\
-### Implementation
-- Create an Amazon Cognito User Pool and Integrate an App to Your User Pool
+## Implementation
+### Create an Amazon Cognito User Pool and Integrate an App to Your User Pool
 Amazon Cognito provides two different mechanisms for authenticating users. You can use Cognito User Pools to add sign-up and sign-in functionality to your application or use Cognito Identity Pools to authenticate users through social identity providers such as Facebook, Twitter, or Amazon, with SAML identity solutions, or by using your own identity system. For this module you'll use a user pool as the backend for the provided registration and sign-in pages.
 ```
 a. In the AWS Console, enter Cognito in the search bar and select Cognito from the search results.
@@ -84,8 +84,8 @@ g. On the Integrate your app page, provide a name for your user pool such as Wil
 h. On the Review and create page, choose Create user pool.
 i. Note the Pool ID and the App client ID on the Pool details page of your newly created user pool.
 ```
-- Update the Website Config
-The /js/config.js file contains settings for the user pool ID, app client ID and Region. Update this file with the settings from the user pool and app you created in the previous steps and upload the file back to your bucket
+### Update the Website Config
+The ```/js/config.js``` file contains settings for the user pool ID, app client ID and Region. Update this file with the settings from the user pool and app you created in the previous steps and upload the file back to your bucket
 ```
 a. From your local machine, open `wildryde-site/js/config.js` in a text editor of your choice.
 b. Update the cognito section with the correct values for the user pool and app you just created.
@@ -106,81 +106,91 @@ window._config = {
     }
 };
 ```
-d. Save the modified file and push it to your Git repository to have it automatically deploy to Amplify Console.\
+```d. Save the modified file and push it to your Git repository to have it automatically deploy to Amplify Console.```
 ```
 git add .
 git commit -m "new_config"
 git push
 ```
-- Validate your implementation
-a. Visit /register.html under your website domain, or choose the Giddy Up! button on the homepage of your site.\
-b. Complete the registration form and choose Let's Ryde. You can use your own email or enter a fake email. Make sure to choose a password that contains at least one upper-case letter, a number, and a special character. Don't forget the password you entered for later. You should see an alert that confirms that your user has been created.\
-c. Confirm your new user using one of the two following methods.\
-d. If you used an email address you control, you can complete the account verification process by visiting /verify.html under your website domain and entering the verification code that is emailed to you. Please note, the verification email may end up in your spam folder. For real deployments we recommend configuring your user pool to use Amazon Simple Email Service to send emails from a domain you own.\
-e. If you used a dummy email address, you must confirm the user manually through the Cognito console.\
-f. From the AWS console, click Services then select Cognito under Security, Identity & Compliance.\
-g. Choose Manage your User Pools\
-h. Select the WildRydes user pool and click Users and groups in the left navigation bar.\
-i. You should see a user corresponding to the email address that you submitted through the registration page. Choose that username to view the user detail page.\
-j. Choose Confirm user to finalize the account creation process.\
-k. After confirming the new user using either the /verify.html page or the Cognito console, visit /signin.html and log in using the email address and password you entered during the registration step.\
+### Validate your implementation
+```
+a. Visit /register.html under your website domain, or choose the Giddy Up! button on the homepage of your site.
+b. Complete the registration form and choose Let's Ryde. You can use your own email or enter a fake email. Make sure to choose a password that contains at least one upper-case letter, a number, and a special character. Don't forget the password you entered for later. You should see an alert that confirms that your user has been created.
+c. Confirm your new user using one of the two following methods.
+d. If you used an email address you control, you can complete the account verification process by visiting /verify.html under your website domain and entering the verification code that is emailed to you. Please note, the verification email may end up in your spam folder. For real deployments we recommend configuring your user pool to use Amazon Simple Email Service to send emails from a domain you own.
+e. If you used a dummy email address, you must confirm the user manually through the Cognito console.
+f. From the AWS console, click Services then select Cognito under Security, Identity & Compliance.
+g. Choose Manage your User Pools
+h. Select the WildRydes user pool and click Users and groups in the left navigation bar.
+i. You should see a user corresponding to the email address that you submitted through the registration page. Choose that username to view the user detail page.
+j. Choose Confirm user to finalize the account creation process.
+k. After confirming the new user using either the /verify.html page or the Cognito console, visit /signin.html and log in using the email address and password you entered during the registration step.
 l. If successful you should be redirected to /ride.html. You should see a notification that the API is not configured.
+```
 ![notification](<Screenshot 2023-07-25 165848.png>)
-### Serverless Service Backend
+# Serverless Service Backend
 In this module, you will use AWS Lambda and Amazon DynamoDB to build a backend process for handling requests for your web application. The browser application that you deployed in the first module allows users to request that a unicorn be sent to a location of their choice. To fulfill those requests, the JavaScript running in the browser will need to invoke a service running in the cloud.
-### Implementation
-- Create an Amazon DynamoDB Table
+## Implementation
+### Create an Amazon DynamoDB Table
 Use the Amazon DynamoDB console to create a new DynamoDB table. Call your table Rides and give it a partition key called RideId with type String. The table name and partition key are case sensitive. Make sure you use the exact IDs provided. Use the defaults for all other settings.\
-After you've created the table, note the ARN for use in the next step.\
-a. From the AWS Management Console, choose Services then select DynamoDB under Databases.\
-b. Choose Create table.\
-c. Enter Rides for the Table name. This field is case sensitive.\
-d. Enter RideId for the Partition key and select String for the key type. This field is case sensitive.\
-e. Check the Use default settings box and choose Create. Navigate to the Tables page in the DynamoDB console and wait for your table creation to complete. Once it is completed, select your table name.\
-f. Scroll to the bottom of the Overview section of your new table and choose Additional info. Note the ARN. You will use this in the next section.\
-- Create an IAM Role for Your Lambda function
+After you've created the table, note the ARN for use in the next step.
+```
+a. From the AWS Management Console, choose Services then select DynamoDB under Databases.
+b. Choose Create table.
+c. Enter Rides for the Table name. This field is case sensitive.
+d. Enter RideId for the Partition key and select String for the key type. This field is case sensitive.
+e. Check the Use default settings box and choose Create. Navigate to the Tables page in the DynamoDB console and wait for your table creation to complete. Once it is completed, select your table name.
+f. Scroll to the bottom of the Overview section of your new table and choose Additional info. Note the ARN. You will use this in the next section.
+```
+### Create an IAM Role for Your Lambda function
 Every Lambda function has an IAM role associated with it. This role defines what other AWS services the function is allowed to interact with. For the purposes of this workshop, you'll need to create an IAM role that grants your Lambda function permission to write logs to Amazon CloudWatch Logs and access to write items to your DynamoDB table.\
 Use the IAM console to create a new role. Name it WildRydesLambda and select AWS Lambda for the role type. You'll need to attach policies that grant your function permissions to write to Amazon CloudWatch Logs and put items to your DynamoDB table.\
-Attach the managed policy called AWSLambdaBasicExecutionRole to this role to grant the necessary CloudWatch Logs permissions. Also, create a custom inline policy for your role that allows the ddb:PutItem action for the table you created in the previous section.\
-a. From the AWS Management Console, click on Services and then select IAM in the Security, Identity & Compliance section.\
-b. Select Roles in the left navigation pane and then choose Create Role.\
-c. Underneath Trusted Entity Type, select AWS service. For Use case, select Lambda, then choose Next.\
+Attach the managed policy called AWSLambdaBasicExecutionRole to this role to grant the necessary CloudWatch Logs permissions. Also, create a custom inline policy for your role that allows the ddb:PutItem action for the table you created in the previous section.
+```
+a. From the AWS Management Console, click on Services and then select IAM in the Security, Identity & Compliance section.
+b. Select Roles in the left navigation pane and then choose Create Role.
+c. Underneath Trusted Entity Type, select AWS service. For Use case, select Lambda, then choose Next.
 Note: Selecting a role type automatically creates a trust policy for your role that allows AWS services to assume this role on your behalf. If you were creating this role using the CLI, AWS CloudFormation or another mechanism, you would specify a trust policy directly.\
-d. Begin typing AWSLambdaBasicExecutionRole in the Filter text box and check the box next to that role.\
-e. Choose Next Step.\
-f. Enter WildRydesLambda for the Role Name. Keep other parameters as default.\
-g. Choose Create Role.\
-h. Type WildRydesLambda into the filter box on the Roles page and choose the role you just created.\
-i. On the Permissions tab, on the left under Add permissions, choose Create Inline Policy.\
-j. Select Choose a service.\
-k. Begin typing DynamoDB into the search box labeled Find a service and select DynamoDB when it appears..\
-l. Choose Select actions.\
-m. Begin typing PutItem into the search box labeled Filter actions and check the box next to PutItem when it appears.\
-n. Select the Resources section.\
-o. With the Specific option selected, choose the Add ARN link in the table section.\
-p. Paste the ARN of the table you created in the previous section in the Specify ARN for table field, and choose Add.\
-q. Choose Review Policy.\
+d. Begin typing AWSLambdaBasicExecutionRole in the Filter text box and check the box next to that role.
+e. Choose Next Step.
+f. Enter WildRydesLambda for the Role Name. Keep other parameters as default.
+g. Choose Create Role.
+h. Type WildRydesLambda into the filter box on the Roles page and choose the role you just created.
+i. On the Permissions tab, on the left under Add permissions, choose Create Inline Policy.
+j. Select Choose a service.
+k. Begin typing DynamoDB into the search box labeled Find a service and select DynamoDB when it appears..
+l. Choose Select actions.
+m. Begin typing PutItem into the search box labeled Filter actions and check the box next to PutItem when it appears.
+n. Select the Resources section.
+o. With the Specific option selected, choose the Add ARN link in the table section.
+p. Paste the ARN of the table you created in the previous section in the Specify ARN for table field, and choose Add.
+q. Choose Review Policy.
 r. Enter DynamoDBWriteAccess for the policy name and choose Create policy.
-- Create a Lambda Function for Handling Requests
+```
+### Create a Lambda Function for Handling Requests
 AWS Lambda will run your code in response to events such as an HTTP request. In this step you'll build the core function that will process API requests from the web application to dispatch a unicorn. In the next module you'll use Amazon API Gateway to create a RESTful API that will expose an HTTP endpoint that can be invoked from your users' browsers. You'll then connect the Lambda function you create in this step to that API in order to create a fully functional backend for your web application.\
 Use the AWS Lambda console to create a new Lambda function called RequestUnicorn that will process the API requests. Use the provided requestUnicorn.js example implementation for your function code. Just copy and paste from that file into the AWS Lambda console's editor.\
-Make sure to configure your function to use the WildRydesLambda IAM role you created in the previous section.\
-a. Choose Services then select Lambda in the Compute section.\
-b. Click Create function.\
-c. Keep the default Author from scratch card selected.\
-d. Enter RequestUnicorn in the Name field.\
-e. Select Node.js 16.x for the Runtime (newer versions of Node.js will not work in this tutorial)\
-f. Ensure Use an existing role is selected from the Change default execution role dropdown.\
-g. Select WildRydesLambda from the Existing Role dropdown.\
-h. Click on Create function.\
-i. Scroll down to the Code source section and replace the existing code in the index.js code editor with the contents of requestUnicorn.js.\
+Make sure to configure your function to use the WildRydesLambda IAM role you created in the previous section.
+```
+a. Choose Services then select Lambda in the Compute section.
+b. Click Create function.
+c. Keep the default Author from scratch card selected.
+d. Enter RequestUnicorn in the Name field.
+e. Select Node.js 16.x for the Runtime (newer versions of Node.js will not work in this tutorial)
+f. Ensure Use an existing role is selected from the Change default execution role dropdown.
+g. Select WildRydesLambda from the Existing Role dropdown.
+h. Click on Create function.
+i. Scroll down to the Code source section and replace the existing code in the index.js code editor with the contents of requestUnicorn.js.
 j. Choose Deploy.
-- Validate Your Implementation
-For this module you will test the function that you built using the AWS Lambda console. In the next module you will add a REST API with API Gateway so you can invoke your function from the browser-based application that you deployed in the first module.\
-a. From the main edit screen for your function, select Test and choose Configure test event from the dropdown.\
-b. Keep Create new event selected.\
-c. Enter TestRequestEvent in the Event name field\
+```
+### Validate Your Implementation
+For this module you will test the function that you built using the AWS Lambda console. In the next module you will add a REST API with API Gateway so you can invoke your function from the browser-based application that you deployed in the first module.
+```
+a. From the main edit screen for your function, select Test and choose Configure test event from the dropdown.
+b. Keep Create new event selected.
+c. Enter TestRequestEvent in the Event name field
 d. Copy and paste the following test event into the editor:
+```
 ```
 {
     "path": "/ride",
@@ -202,10 +212,12 @@ d. Copy and paste the following test event into the editor:
     "body": "{\"PickupLocation\":{\"Latitude\":47.6174755835663,\"Longitude\":-122.28837066650185}}"
 }
 ```
-e. Choose Save.\
-f. On the main function edit screen click Test with TestRequestEvent selected in the dropdown.\
-g. Scroll to the top of the page and expand the Details section of the Execution result section.\
+```
+e. Choose Save.
+f. On the main function edit screen click Test with TestRequestEvent selected in the dropdown.
+g. Scroll to the top of the page and expand the Details section of the Execution result section.
 h. Verify that the execution succeeded and that the function result looks like the following:
+```
 ```
 {
     "statusCode": 201,
@@ -215,13 +227,13 @@ h. Verify that the execution succeeded and that the function result looks like t
     }
 }
 ```
-### Deploy a RESTful API
+# Deploy a RESTful API
 In this module, you will use Amazon API Gateway to expose the Lambda function you built in the previous module as a RESTful API. This API will be accessible on the public Internet. It will be secured using the Amazon Cognito user pool you created in the previous module. Using this configuration, you will then turn your statically hosted website into a dynamic web application by adding client-side JavaScript that makes AJAX calls to the exposed APIs.\
 The diagram above shows how the API Gateway component you will build in this module integrates with the existing components you built previously. The grayed out items are pieces you have already implemented in previous steps.\
 The static website you deployed in the first module already has a page configured to interact with the API you will build in this module. The page at /ride.html has a simple map-based interface for requesting a unicorn ride. After authenticating using the /signin.html page, your users will be able to select their pickup location by clicking a point on the map and then requesting a ride by choosing the "Request Unicorn" button in the upper right corner.\
 This module will focus on the steps required to build the cloud components of the API, but if you're interested in how the browser code works that calls this API, you can inspect the ride.js file of the website. In this case, the application uses jQuery's ajax() method to make the remote request.
-### Implementation
-- Create a New REST API
+## Implementation
+### Create a New REST API
 ```
 a. In the AWS Management Console, click Services then select API Gateway under Application Services.
 b. Choose Create API. Underneath the Create new API section, make sure New API is selected.
@@ -229,7 +241,7 @@ c. Select Build under REST API and enter WildRydes for the API Name.
 d. Choose Edge optimized in the Endpoint Type dropdown. Note: Edge optimized are best for public services being accessed from the Internet. Regional endpoints are typically used for APIs that are accessed primarily from within the same AWS Region.
 e. Choose Create API
 ```
-- Create a new resource and method
+### Create a new resource and method
 Create a new resource called /ride within your API. Then create a POST method for that resource and configure it to use a Lambda proxy integration backed by the RequestUnicorn function you created in the first step of this module.
 ```
 a. In the left nav, click on Resources under your WildRydes API.
@@ -250,7 +262,7 @@ o. Choose on the Method Request card.
 p. Choose the pencil icon next to Authorization.
 q. Create Authorizer using https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-enable-cognito-user-pool.html, Select the WildRydes Cognito user pool authorizer from the drop-down list, and click the checkmark icon.
 ```
-- Deploy Your API
+### Deploy Your API
 From the Amazon API Gateway console, choose Actions, Deploy API. You'll be prompted to create a new stage. You can use prod for the stage name.
 ```
 a. In the Actions drop-down list select Deploy API.
@@ -259,7 +271,7 @@ c. Enter prod for the Stage Name.
 d. Choose Deploy.
 e. Note the Invoke URL. You will use it in the next section.
 ```
-- Update the website config
+### Update the website config
 Update the /js/config.js file in your website deployment to include the invoke URL of the stage you just created. You should copy the invoke URL directly from the top of the stage editor page on the Amazon API Gateway console and paste it into the _config.api.invokeUrl key of your sites /js/config.js file. Make sure when you update the config file it still contains the updates you made in the previous module for your Cognito user pool.
 ```
 a. Open the config.js file in a text editor.
@@ -268,40 +280,33 @@ b. Update the invokeUrl setting under the api key in the config.js file. Set the
 An example of a complete config.js file is included below. Note, the actual values in your file will be different.
 ```
 window._config = {
-
     cognito: {
-
         userPoolId: 'us-west-2_uXboG5pAb', // e.g. us-east-2_uXboG5pAb         
-
         userPoolClientId: '25ddkmj4v6hfsfvruhpfi7n4hv', // e.g. 25ddkmj4v6hfsfvruhpfi7n4hv
-
         region: 'us-west-2' // e.g. us-east-2 
-
     }, 
-
     api: { 
-
         invokeUrl: 'https://rc7nyt4tql.execute-api.us-west-2.amazonaws.com/prod' // e.g. https://rc7nyt4tql.execute-api.us-west-2.amazonaws.com/prod, 
-
     } 
-
 };
 ```
-c. Save the modified file and push it to your Git repository to have it automatically deploy to Amplify Console.
+```c. Save the modified file and push it to your Git repository to have it automatically deploy to Amplify Console.```
 ```
 git add .
 git commit -m "new_configuration"
 git push
 ```
-- Validate your implementation
-Note: It is possible that you will see a delay between updating the config.js file in your S3 bucket and when the updated content is visible in your browser. You should also ensure that you clear your browser cache before executing the following steps.\
+### Validate your implementation
+Note: It is possible that you will see a delay between updating the config.js file in your S3 bucket and when the updated content is visible in your browser. You should also ensure that you clear your browser cache before executing the following steps.
+```
 a. Update the ArcGIS JS version from 4.3 to 4.6 (newer versions will not work in this tutorial) in the ride.html file as:
+```
 ```
 <script src="https://js.arcgis.com/4.6/"></script>
  <link rel="stylesheet" href="https://js.arcgis.com/4.6/esri/css/main.css">
- ```
- An example of a complete ride.html file is included below. Note, some values in your file may be different.
- ```
+```
+An example of a complete ride.html file is included below. Note, some values in your file may be different.
+```
  <div id="noApiMessage" class="configMessage" style="display: none;">
         <div class="backdrop"></div>
         <div class="panel panel-default">
@@ -364,21 +369,23 @@ a. Update the ArcGIS JS version from 4.3 to 4.6 (newer versions will not work in
 
 </html>
 ```
-b. Save the modified file and push it to your Git repository to have it automatically deploy to Amplify Console.\
-c. Visit /ride.html under your website domain.\
-d. If you are redirected to the ArcGIS sign-in page, sign in with the user credentials you created previously in the Introduction section as a prerequisite of this tutorial.\
-e. After the map has loaded, click anywhere on the map to set a pickup location.\
+```
+b. Save the modified file and push it to your Git repository to have it automatically deploy to Amplify Console.
+c. Visit /ride.html under your website domain.
+d. If you are redirected to the ArcGIS sign-in page, sign in with the user credentials you created previously in the Introduction section as a prerequisite of this tutorial.
+e. After the map has loaded, click anywhere on the map to set a pickup location.
 f. Choose Request Unicorn. You should see a notification in the right sidebar that a unicorn is on its way and then see a unicorn icon fly to your pickup location.
-### Resource cleanup
+```
+# Resource cleanup
 In this module, you will go through the steps to terminate all the resources you created throughout this tutorial. You will terminate your AWS Amplify app, an Amazon Cognito User Pool, an AWS Lambda function, an IAM role, a DynamoDB table, a REST API, and a CloudWatch Log. It is a best practice to delete resources you are no longer using to avoid unwanted charges.
-### Implementation
-- Delete your Amplify App
+## Implementation
+### Delete your Amplify App
 ```
 a. In the AWS Management Console choose Services then select AWS Amplify under Mobile.
 b. Select the app you created in module 1.
 c. On the app landing page, choose ‘Actions > Delete app’. Enter ‘delete’ when prompted to confirm, then choose confirm.
 ```
-- Delete your Amazon Cognito user pool
+### Delete your Amazon Cognito user pool
 If you used the provided AWS CloudFormation template to complete module 2, simply delete the stack using the AWS CloudFormation Console. Otherwise, delete the Amazon Cognito user pool you created in module 2.
 ```
 a. From the AWS Console click Services then select Cognito under Mobile Services.
@@ -387,7 +394,7 @@ c. Select the WildRydes user pool you created in module 2.
 d. Choose Delete Pool in the upper right corner of the page.
 e. Type delete and choose Delete Pool when prompted to confirm.
 ```
-- Delete your serverless backend
+### Delete your serverless backend
 Delete the AWS Lambda function, IAM role and Amazon DynamoDB table you created in module 3.
 ```
 Lambda Function
@@ -411,7 +418,7 @@ c. Choose the Rides table you created in module 3.
 d. Choose Delete at the top right.
 e. Leave the checkbox to Delete all CloudWatch alarms for this table selected, enter delete, and choose Delete.
 ```
-- Delete your REST API
+### Delete your REST API
 Delete the REST API created in module 4. There is a Delete API option in the Actions drop-down when you select your API in the Amazon API Gateway Console.
 ```
 a. In the AWS Management Console, click Services then select API Gateway under Application Services.
@@ -419,7 +426,7 @@ b. Select the API you created in module 4.
 c. Expand the Actions drop-down and choose Delete API.
 d. Enter the name of your API when prompted and choose Delete API.
 ```
-- Delete your CloudWatch Log
+### Delete your CloudWatch Log
 AWS Lambda automatically creates a new log group per function in Amazon CloudWatch Logs and writes logs to it when your function is invoked. You should delete the log group for the RequestUnicorn function. Also, if you launched any CloudFormation stacks, there may be log groups associated with custom resources in those stacks that you should delete.
 ```
 a. From the AWS Console click Services then select CloudWatch under Management Tools.
