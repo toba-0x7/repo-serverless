@@ -38,5 +38,18 @@ git commit -m 'new'
 git push
 ```
 - Enable Web Hosting with the AWS Amplify Console
+Next you'll use the AWS Amplify Console to deploy the website you've just committed to git. The Amplify Console takes care of the work of setting up a place to store your static web application code and provides a number of helpful capabilities to simplify both the lifecycle of that application as well as enable best practices.\
+
+a. Launch the Amplify Console console page\
+b. Click Get Started under Deploy with Amplify Console\
+c. Go to New App on the top right and choose Host Web App\
+d. Select CodeCommit under Get started with Amplify Hosting\
+e. Select the Repository service provider used today and select Continue\
+f. If you used GitHub, you'll need to authorize AWS Amplify to your GitHub account\
+g. From the dropdown, select the Repository and Branch you just created and select Next\
+h. On the Configure build settings page, leave all the defaults, Select Allow AWS Amplify to automatically deploy all files hosted in your project root directory and select Next.\
+i. On the "Review" page select Save and deploy\
+j. The process takes a couple of minutes for Amplify Console to create the necessary resources and to deploy your code.\
+Once completed, click on the site image to launch your Wild Rydes site. If you click on the link for Master you'll see the build and deployment details related to your branch, and screenshots of the app on various devices
 - Modify your site
 - Recapx
