@@ -52,4 +52,12 @@ i. On the "Review" page select Save and deploy\
 j. The process takes a couple of minutes for Amplify Console to create the necessary resources and to deploy your code.\
 Once completed, click on the site image to launch your Wild Rydes site. If you click on the link for Master you'll see the build and deployment details related to your branch, and screenshots of the app on various devices
 - Modify your site
+The AWS Amplify Console will rebuild and redeploy the app when it detects changes to the connected repository. Make a change to the main page to test out this process.\
+a. From your local machine, open `wildryde-site/index.html` in a text editor of your choice and modify the title line so that it says: <title>Wild Rydes - Rydes of the Future!</title>\
+b. Save the file and commit to your git repository again. Amplify Console will begin to build the site again soon after it notices the update to the repository. It will happen pretty quickly! Head back to the Amplify Console page to watch the process.
+```
+git add index.html 
+git commit -m "updated title"
+git push
+   ```
 - Recapx
