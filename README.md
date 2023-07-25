@@ -38,28 +38,31 @@ git commit -m 'new'
 git push
 ```
 - Enable Web Hosting with the AWS Amplify Console
-Next you'll use the AWS Amplify Console to deploy the website you've just committed to git. The Amplify Console takes care of the work of setting up a place to store your static web application code and provides a number of helpful capabilities to simplify both the lifecycle of that application as well as enable best practices.\
-
-a. Launch the Amplify Console console page\
-b. Click Get Started under Deploy with Amplify Console\
-c. Go to New App on the top right and choose Host Web App\
-d. Select CodeCommit under Get started with Amplify Hosting\
-e. Select the Repository service provider used today and select Continue\
-f. If you used GitHub, you'll need to authorize AWS Amplify to your GitHub account\
-g. From the dropdown, select the Repository and Branch you just created and select Next\
-h. On the Configure build settings page, leave all the defaults, Select Allow AWS Amplify to automatically deploy all files hosted in your project root directory and select Next.\
-i. On the "Review" page select Save and deploy\
-j. The process takes a couple of minutes for Amplify Console to create the necessary resources and to deploy your code.\
+Next you'll use the AWS Amplify Console to deploy the website you've just committed to git. The Amplify Console takes care of the work of setting up a place to store your static web application code and provides a number of helpful capabilities to simplify both the lifecycle of that application as well as enable best practices.
+```
+a. Launch the Amplify Console console page
+b. Click Get Started under Deploy with Amplify Console
+c. Go to New App on the top right and choose Host Web App
+d. Select CodeCommit under Get started with Amplify Hosting
+e. Select the Repository service provider used today and select Continue
+f. If you used GitHub, you'll need to authorize AWS Amplify to your GitHub account
+g. From the dropdown, select the Repository and Branch you just created and select Next
+h. On the Configure build settings page, leave all the defaults, Select Allow AWS Amplify to automatically deploy all files hosted in your project root directory and select Next.
+i. On the "Review" page select Save and deploy
+j. The process takes a couple of minutes for Amplify Console to create the necessary resources and to deploy your code.
+```
 Once completed, click on the site image to launch your Wild Rydes site. If you click on the link for Master you'll see the build and deployment details related to your branch, and screenshots of the app on various devices
 - Modify your site
-The AWS Amplify Console will rebuild and redeploy the app when it detects changes to the connected repository. Make a change to the main page to test out this process.\
+The AWS Amplify Console will rebuild and redeploy the app when it detects changes to the connected repository. Make a change to the main page to test out this process.
+```
 a. From your local machine, open `wildryde-site/index.html` in a text editor of your choice and modify the title line so that it says: <title>Wild Rydes - Rydes of the Future!</title>\
 b. Save the file and commit to your git repository again. Amplify Console will begin to build the site again soon after it notices the update to the repository. It will happen pretty quickly! Head back to the Amplify Console page to watch the process.
+```
 ```
 git add index.html 
 git commit -m "updated title"
 git push
-   ```
+```
 - Recap
 In this module, you've created static website which will be the base for our Wild Rydes business. AWS Amplify Console makes it really easy to deploy static websites following a continuous integration and delivery model. It has capabilities for "building" more complicated Javascript framework based applications and has features such as feature branch deployments, easy custom domain setup, instant deployments, and password protection.
 ### User Management
@@ -69,20 +72,24 @@ After users submit their registration, Amazon Cognito will send a confirmation e
 After users have a confirmed account (either using the email verification process or a manual confirmation through the console), they will be able to sign in. When users sign in, they enter their username (or email) and password. A JavaScript function then communicates with Amazon Cognito, authenticates using the Secure Remote Password protocol (SRP), and receives back a set of JSON Web Tokens (JWT). The JWTs contain claims about the identity of the user and will be used in the next module to authenticate against the RESTful API you build with Amazon API Gateway.\
 ### Implementation
 - Create an Amazon Cognito User Pool and Integrate an App to Your User Pool
-Amazon Cognito provides two different mechanisms for authenticating users. You can use Cognito User Pools to add sign-up and sign-in functionality to your application or use Cognito Identity Pools to authenticate users through social identity providers such as Facebook, Twitter, or Amazon, with SAML identity solutions, or by using your own identity system. For this module you'll use a user pool as the backend for the provided registration and sign-in pages.\
-a. In the AWS Console, enter Cognito in the search bar and select Cognito from the search results.\
-b. Choose Create user pool.\
-c. On the Configure sign-in experience page, in the Cognito user pool sign-in options section, select User name. Keep the defaults for the other settings, such as Provider types in the Authentication providers section. Choose Next.\
-d. On the Configure security requirements page, keep the Password policy mode as Cognito defaults. You can choose to configure multi-factor authentication (MFA) or choose No MFA and keep other configurations as default. Choose Next.\
-e. On the Configure sign-up experience page, keep everything as default. Choose Next.\
-f. On the Configure message delivery page, for Email provider, confirm that Send email with Amazon SES - Recommended is selected. In the FROM email address field, select an email address that you have verified with Amazon SES, following these instructions from the Amazon SES Developer Guide.\
-g. On the Integrate your app page, provide a name for your user pool such as WildRydes. Under Initial app client, give the app client a name such as WildRydesWebApp and keep other settings as default.\
-h. On the Review and create page, choose Create user pool.\
+Amazon Cognito provides two different mechanisms for authenticating users. You can use Cognito User Pools to add sign-up and sign-in functionality to your application or use Cognito Identity Pools to authenticate users through social identity providers such as Facebook, Twitter, or Amazon, with SAML identity solutions, or by using your own identity system. For this module you'll use a user pool as the backend for the provided registration and sign-in pages.
+```
+a. In the AWS Console, enter Cognito in the search bar and select Cognito from the search results.
+b. Choose Create user pool.
+c. On the Configure sign-in experience page, in the Cognito user pool sign-in options section, select User name. Keep the defaults for the other settings, such as Provider types in the Authentication providers section. Choose Next.
+d. On the Configure security requirements page, keep the Password policy mode as Cognito defaults. You can choose to configure multi-factor authentication (MFA) or choose No MFA and keep other configurations as default. Choose Next.
+e. On the Configure sign-up experience page, keep everything as default. Choose Next.
+f. On the Configure message delivery page, for Email provider, confirm that Send email with Amazon SES - Recommended is selected. In the FROM email address field, select an email address that you have verified with Amazon SES, following these instructions from the Amazon SES Developer Guide.
+g. On the Integrate your app page, provide a name for your user pool such as WildRydes. Under Initial app client, give the app client a name such as WildRydesWebApp and keep other settings as default.
+h. On the Review and create page, choose Create user pool.
 i. Note the Pool ID and the App client ID on the Pool details page of your newly created user pool.
+```
 - Update the Website Config
-The /js/config.js file contains settings for the user pool ID, app client ID and Region. Update this file with the settings from the user pool and app you created in the previous steps and upload the file back to your bucket\
-a. From your local machine, open `wildryde-site/js/config.js` in a text editor of your choice.\
+The /js/config.js file contains settings for the user pool ID, app client ID and Region. Update this file with the settings from the user pool and app you created in the previous steps and upload the file back to your bucket
+```
+a. From your local machine, open `wildryde-site/js/config.js` in a text editor of your choice.
 b. Update the cognito section with the correct values for the user pool and app you just created.
+```
 You can find the value for userPoolId on the Pool details page of the Amazon Cognito console after you select the user pool that you created.\
 You can find the value for userPoolClientId by selecting App clients from the left navigation bar. Use the value from the App client id field for the app you created in the previous section.\
 The value for region should be the AWS Region code where you created your user pool. E.g. us-east-1 for the N. Virginia Region, or us-west-2 for the Oregon Region. If you're not sure which code to use, you can look at the Pool ARN value on the Pool details page. The Region code is the part of the ARN immediately after arn:aws:cognito-idp:.\
