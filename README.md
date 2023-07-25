@@ -60,4 +60,49 @@ git add index.html
 git commit -m "updated title"
 git push
    ```
-- Recapx
+- Recap
+In this module, you've created static website which will be the base for our Wild Rydes business. AWS Amplify Console makes it really easy to deploy static websites following a continuous integration and delivery model. It has capabilities for "building" more complicated Javascript framework based applications and has features such as feature branch deployments, easy custom domain setup, instant deployments, and password protection.
+### User Management
+In this module you'll create an Amazon Cognito user pool to manage your users' accounts. You'll deploy pages that enable customers to register as a new user, verify their email address, and sign into the site.\
+When users visit your website they will first register a new user account. For the purposes of this workshop we'll only require them to provide an email address and password to register. However, you can configure Amazon Cognito to require additional attributes in your own applications.\
+After users submit their registration, Amazon Cognito will send a confirmation email with a verification code to the address they provided. To confirm their account, users will return to your site and enter their email address and the verification code they received. You can also confirm user accounts using the Amazon Cognito console with a fake email addresses for testing.\
+After users have a confirmed account (either using the email verification process or a manual confirmation through the console), they will be able to sign in. When users sign in, they enter their username (or email) and password. A JavaScript function then communicates with Amazon Cognito, authenticates using the Secure Remote Password protocol (SRP), and receives back a set of JSON Web Tokens (JWT). The JWTs contain claims about the identity of the user and will be used in the next module to authenticate against the RESTful API you build with Amazon API Gateway.\
+### Implementation
+- Create an Amazon Cognito User Pool and Integrate an App to Your User Pool
+Amazon Cognito provides two different mechanisms for authenticating users. You can use Cognito User Pools to add sign-up and sign-in functionality to your application or use Cognito Identity Pools to authenticate users through social identity providers such as Facebook, Twitter, or Amazon, with SAML identity solutions, or by using your own identity system. For this module you'll use a user pool as the backend for the provided registration and sign-in pages.\
+a. In the AWS Console, enter Cognito in the search bar and select Cognito from the search results.\
+b. Choose Create user pool.\
+c. On the Configure sign-in experience page, in the Cognito user pool sign-in options section, select User name. Keep the defaults for the other settings, such as Provider types in the Authentication providers section. Choose Next.\
+d. On the Configure security requirements page, keep the Password policy mode as Cognito defaults. You can choose to configure multi-factor authentication (MFA) or choose No MFA and keep other configurations as default. Choose Next.\
+e. On the Configure sign-up experience page, keep everything as default. Choose Next.\
+f. On the Configure message delivery page, for Email provider, confirm that Send email with Amazon SES - Recommended is selected. In the FROM email address field, select an email address that you have verified with Amazon SES, following these instructions from the Amazon SES Developer Guide.\
+g. On the Integrate your app page, provide a name for your user pool such as WildRydes. Under Initial app client, give the app client a name such as WildRydesWebApp and keep other settings as default.\
+h. On the Review and create page, choose Create user pool.\
+i. Note the Pool ID and the App client ID on the Pool details page of your newly created user pool.
+- Update the Website Config
+The /js/config.js file contains settings for the user pool ID, app client ID and Region. Update this file with the settings from the user pool and app you created in the previous steps and upload the file back to your bucket\
+a. From your local machine, open `wildryde-site/js/config.js` in a text editor of your choice.\
+b. Update the cognito section with the correct values for the user pool and app you just created.
+You can find the value for userPoolId on the Pool details page of the Amazon Cognito console after you select the user pool that you created.\
+You can find the value for userPoolClientId by selecting App clients from the left navigation bar. Use the value from the App client id field for the app you created in the previous section.\
+The value for region should be the AWS Region code where you created your user pool. E.g. us-east-1 for the N. Virginia Region, or us-west-2 for the Oregon Region. If you're not sure which code to use, you can look at the Pool ARN value on the Pool details page. The Region code is the part of the ARN immediately after arn:aws:cognito-idp:.\
+The updated config.js file should look like this. Note that the actual values for your file will be different:
+```
+window._config = {
+    cognito: {
+        userPoolId: 'us-west-2_uXboG5pAb', // e.g. us-east-2_uXboG5pAb
+        userPoolClientId: '25ddkmj4v6hfsfvruhpfi7n4hv', // e.g. 25ddkmj4v6hfsfvruhpfi7n4hv
+        region: 'us-west-2' // e.g. us-east-2
+    },
+    api: {
+        invokeUrl: '' // e.g. https://rc7nyt4tql.execute-api.us-west-2.amazonaws.com/prod',
+    }
+};
+```
+d. Save the modified file and push it to your Git repository to have it automatically deploy to Amplify Console.\
+```
+git add .
+git commit -m "new_config"
+git push
+```
+- Validate your implementation
