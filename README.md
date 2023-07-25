@@ -106,3 +106,105 @@ git commit -m "new_config"
 git push
 ```
 - Validate your implementation
+a. Visit /register.html under your website domain, or choose the Giddy Up! button on the homepage of your site.\
+b. Complete the registration form and choose Let's Ryde. You can use your own email or enter a fake email. Make sure to choose a password that contains at least one upper-case letter, a number, and a special character. Don't forget the password you entered for later. You should see an alert that confirms that your user has been created.\
+c. Confirm your new user using one of the two following methods.\
+d. If you used an email address you control, you can complete the account verification process by visiting /verify.html under your website domain and entering the verification code that is emailed to you. Please note, the verification email may end up in your spam folder. For real deployments we recommend configuring your user pool to use Amazon Simple Email Service to send emails from a domain you own.\
+e. If you used a dummy email address, you must confirm the user manually through the Cognito console.\
+f. From the AWS console, click Services then select Cognito under Security, Identity & Compliance.\
+g. Choose Manage your User Pools\
+h. Select the WildRydes user pool and click Users and groups in the left navigation bar.\
+i. You should see a user corresponding to the email address that you submitted through the registration page. Choose that username to view the user detail page.\
+j. Choose Confirm user to finalize the account creation process.\
+k. After confirming the new user using either the /verify.html page or the Cognito console, visit /signin.html and log in using the email address and password you entered during the registration step.\
+l. If successful you should be redirected to /ride.html. You should see a notification that the API is not configured.
+![notification](<Screenshot 2023-07-25 165848.png>)
+### Serverless Service Backend
+In this module, you will use AWS Lambda and Amazon DynamoDB to build a backend process for handling requests for your web application. The browser application that you deployed in the first module allows users to request that a unicorn be sent to a location of their choice. To fulfill those requests, the JavaScript running in the browser will need to invoke a service running in the cloud.
+### Implementation
+- Create an Amazon DynamoDB Table
+Use the Amazon DynamoDB console to create a new DynamoDB table. Call your table Rides and give it a partition key called RideId with type String. The table name and partition key are case sensitive. Make sure you use the exact IDs provided. Use the defaults for all other settings.\
+After you've created the table, note the ARN for use in the next step.\
+a. From the AWS Management Console, choose Services then select DynamoDB under Databases.\
+b. Choose Create table.\
+c. Enter Rides for the Table name. This field is case sensitive.\
+d. Enter RideId for the Partition key and select String for the key type. This field is case sensitive.\
+e. Check the Use default settings box and choose Create. Navigate to the Tables page in the DynamoDB console and wait for your table creation to complete. Once it is completed, select your table name.\
+f. Scroll to the bottom of the Overview section of your new table and choose Additional info. Note the ARN. You will use this in the next section.\
+- Create an IAM Role for Your Lambda function
+Every Lambda function has an IAM role associated with it. This role defines what other AWS services the function is allowed to interact with. For the purposes of this workshop, you'll need to create an IAM role that grants your Lambda function permission to write logs to Amazon CloudWatch Logs and access to write items to your DynamoDB table.\
+Use the IAM console to create a new role. Name it WildRydesLambda and select AWS Lambda for the role type. You'll need to attach policies that grant your function permissions to write to Amazon CloudWatch Logs and put items to your DynamoDB table.\
+Attach the managed policy called AWSLambdaBasicExecutionRole to this role to grant the necessary CloudWatch Logs permissions. Also, create a custom inline policy for your role that allows the ddb:PutItem action for the table you created in the previous section.\
+a. From the AWS Management Console, click on Services and then select IAM in the Security, Identity & Compliance section.\
+b. Select Roles in the left navigation pane and then choose Create Role.\
+c. Underneath Trusted Entity Type, select AWS service. For Use case, select Lambda, then choose Next.\
+Note: Selecting a role type automatically creates a trust policy for your role that allows AWS services to assume this role on your behalf. If you were creating this role using the CLI, AWS CloudFormation or another mechanism, you would specify a trust policy directly.\
+d. Begin typing AWSLambdaBasicExecutionRole in the Filter text box and check the box next to that role.\
+e. Choose Next Step.\
+f. Enter WildRydesLambda for the Role Name. Keep other parameters as default.\
+g. Choose Create Role.\
+h. Type WildRydesLambda into the filter box on the Roles page and choose the role you just created.\
+i. On the Permissions tab, on the left under Add permissions, choose Create Inline Policy.\
+j. Select Choose a service.\
+k. Begin typing DynamoDB into the search box labeled Find a service and select DynamoDB when it appears..\
+l. Choose Select actions.\
+m. Begin typing PutItem into the search box labeled Filter actions and check the box next to PutItem when it appears.\
+n. Select the Resources section.\
+o. With the Specific option selected, choose the Add ARN link in the table section.\
+p. Paste the ARN of the table you created in the previous section in the Specify ARN for table field, and choose Add.\
+q. Choose Review Policy.\
+r. Enter DynamoDBWriteAccess for the policy name and choose Create policy.
+- Create a Lambda Function for Handling Requests
+AWS Lambda will run your code in response to events such as an HTTP request. In this step you'll build the core function that will process API requests from the web application to dispatch a unicorn. In the next module you'll use Amazon API Gateway to create a RESTful API that will expose an HTTP endpoint that can be invoked from your users' browsers. You'll then connect the Lambda function you create in this step to that API in order to create a fully functional backend for your web application.\
+Use the AWS Lambda console to create a new Lambda function called RequestUnicorn that will process the API requests. Use the provided requestUnicorn.js example implementation for your function code. Just copy and paste from that file into the AWS Lambda console's editor.\
+Make sure to configure your function to use the WildRydesLambda IAM role you created in the previous section.\
+a. Choose Services then select Lambda in the Compute section.\
+b. Click Create function.\
+c. Keep the default Author from scratch card selected.\
+d. Enter RequestUnicorn in the Name field.\
+e. Select Node.js 16.x for the Runtime (newer versions of Node.js will not work in this tutorial)\
+f. Ensure Use an existing role is selected from the Change default execution role dropdown.\
+g. Select WildRydesLambda from the Existing Role dropdown.\
+h. Click on Create function.\
+i. Scroll down to the Code source section and replace the existing code in the index.js code editor with the contents of requestUnicorn.js.\
+j. Choose Deploy.
+- Validate Your Implementation
+For this module you will test the function that you built using the AWS Lambda console. In the next module you will add a REST API with API Gateway so you can invoke your function from the browser-based application that you deployed in the first module.\
+a. From the main edit screen for your function, select Test and choose Configure test event from the dropdown.\
+b. Keep Create new event selected.\
+c. Enter TestRequestEvent in the Event name field\
+d. Copy and paste the following test event into the editor:
+```
+{
+    "path": "/ride",
+    "httpMethod": "POST",
+    "headers": {
+        "Accept": "*/*",
+        "Authorization": "eyJraWQiOiJLTzRVMWZs",
+        "content-type": "application/json; charset=UTF-8"
+    },
+    "queryStringParameters": null,
+    "pathParameters": null,
+    "requestContext": {
+        "authorizer": {
+            "claims": {
+                "cognito:username": "the_username"
+            }
+        }
+    },
+    "body": "{\"PickupLocation\":{\"Latitude\":47.6174755835663,\"Longitude\":-122.28837066650185}}"
+}
+```
+e. Choose Save.\
+f. On the main function edit screen click Test with TestRequestEvent selected in the dropdown.\
+g. Scroll to the top of the page and expand the Details section of the Execution result section.\
+h. Verify that the execution succeeded and that the function result looks like the following:
+```
+{
+    "statusCode": 201,
+    "body": "{\"RideId\":\"SvLnijIAtg6inAFUBRT+Fg==\",\"Unicorn\":{\"Name\":\"Rocinante\",\"Color\":\"Yellow\",\"Gender\":\"Female\"},\"Eta\":\"30 seconds\"}",
+    "headers": {
+        "Access-Control-Allow-Origin": "*"
+    }
+}
+```
